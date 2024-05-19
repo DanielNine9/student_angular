@@ -1,0 +1,20 @@
+<app-edit-class (submit)="onSubmit($event)" [isAdd]="true" [schoolClass]="{name: ''}"></app-edit-class>
+<table class="table table-hover table-striped">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <div *ngIf="classes.length != 0; then data; else noData"></div>
+    <ng-template #data>
+      <tr *ngFor="let school_class of classes" [routerLink]="['/classes', school_class.id]">
+        <th scope="row">CL{{ school_class.id }}</th>
+        <td>{{ school_class.name }}</td>
+      </tr>
+      
+    </ng-template>
+    <ng-template #noData> No data </ng-template>
+  </tbody>
+</table>
