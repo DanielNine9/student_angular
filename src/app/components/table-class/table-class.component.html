@@ -1,19 +1,50 @@
-<app-edit-class (submit)="onSubmit($event)" [isAdd]="true" [schoolClass]="{name: ''}"></app-edit-class>
+<app-edit-class
+  (submit)="onSubmit($event)"
+  [isAdd]="true"
+  [schoolClass]="{ name: '', semesters: [] }"
+></app-edit-class>
 <table class="table table-hover table-striped">
   <thead>
     <tr>
       <th scope="col">#</th>
       <th scope="col">Name</th>
+      <th scope="col">Semesters</th>
+      <th scope="col">Quantity</th>
     </tr>
   </thead>
   <tbody>
     <div *ngIf="classes.length != 0; then data; else noData"></div>
     <ng-template #data>
-      <tr *ngFor="let school_class of classes" [routerLink]="['/classes', school_class.id]">
+      <tr
+        *ngFor="let school_class of classes"
+        [routerLink]="['/classes', school_class.id]"
+      >
         <th scope="row">CL{{ school_class.id }}</th>
         <td>{{ school_class.name }}</td>
+        <td>
+          <ng-container
+            *ngIf="
+              school_class.semesters && school_class.semesters.length > 0;
+              else noSemesters
+            "
+          >
+            {{ school_class.semesters.join(", ") }}
+          </ng-container>
+          <ng-template #noSemesters> No semesters </ng-template>
+        </td>
+        <td>
+          <ng-container
+            *ngIf="
+              school_class.quantity && school_class.quantity > 0;
+              else noStudent
+            "
+          >
+          {{school_class.quantity}}
+          </ng-container>
+          <ng-template #noStudent> <span class="text-danger">No student</span></ng-template>
+          
+        </td>
       </tr>
-      
     </ng-template>
     <ng-template #noData> No data </ng-template>
   </tbody>

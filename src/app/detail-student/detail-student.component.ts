@@ -5,11 +5,12 @@ import { Student } from '../type';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClassService } from '../services/class.service';
 import { StudentService } from '../services/student.service';
+import { ControlScoreComponent } from '../components/control-score/control-score.component';
 
 @Component({
   selector: 'app-detail-student',
   standalone: true,
-  imports: [CommonModule, EditStudentComponent],
+  imports: [CommonModule, EditStudentComponent, ControlScoreComponent],
   templateUrl: './detail-student.component.html',
   styleUrl: './detail-student.component.css',
 })
@@ -45,6 +46,7 @@ export class DetailStudentComponent {
     if (this.idStudent) {
       this.studentService.getStudent(this.idStudent).subscribe((data) => {
         this.currentStudent = data;
+        console.log(this.currentStudent)
       });
     }
   }

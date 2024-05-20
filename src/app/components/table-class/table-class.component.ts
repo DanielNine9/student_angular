@@ -1,9 +1,10 @@
 import { RouterLink } from '@angular/router';
-import { Class } from './../../type';
+import { Class, Semester } from './../../type';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { EditClassComponent } from '../edit-class/edit-class.component';
 import { ClassService } from '../../services/class.service';
+import { SemesterService } from '../../services/semester.service';
 
 @Component({
   selector: 'app-table-class',
@@ -14,13 +15,17 @@ import { ClassService } from '../../services/class.service';
 })
 export class TableClassComponent implements OnInit {
   classes: Class[] = [];
+  semesters: Semester[] = []
   @Output() updatedClass: EventEmitter<boolean> = new EventEmitter();
 
-  constructor(private classService: ClassService) {}
+  constructor(private classService: ClassService, private semesterService: SemesterService) {}
 
   ngOnInit(): void {
     this.getClasses();
+
   }
+
+
 
   private getClasses() {
     this.classService.getClasses().subscribe((data) => {
@@ -28,8 +33,8 @@ export class TableClassComponent implements OnInit {
     });
   }
 
-  onSubmit(name: string) {
-    this.classService.addClass({ name: name }).subscribe(
+  onSubmit(data: any) {
+    this.classService.addClass(data).subscribe(
       () => {
         this.getClasses();
         this.updatedClass.emit(true)

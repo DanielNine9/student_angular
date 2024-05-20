@@ -50,23 +50,27 @@ export class DetailClassComponent {
     }
   }
 
-  onSubmit(name: string) {
+  onSubmit(data: any) {
     if (this.currentClass && this.currentClass.id) {
-      this.classService
-        .editClass({ name: name }, this.currentClass.id)
-        .subscribe(
-          (success) => {
-            alert('Edit class successfully');
-            this.getData();
-          },
-          (error) => {
-            alert('Edit failure');
-            console.log(this.currentClass)
-            this.getData();
-          }
-        );
+      this.classService.editClass(data, this.currentClass.id).subscribe(
+        (success) => {
+          alert('Edit class successfully');
+          this.getData();
+        },
+        (error) => {
+          alert('Edit failure');
+          console.log(this.currentClass);
+          this.getData();
+        }
+      );
     } else {
       alert('Current class is undefined');
     }
+  }
+
+  onCancel($event: any) {
+    console.log('vao day tiep theo');
+
+    this.getData();
   }
 }

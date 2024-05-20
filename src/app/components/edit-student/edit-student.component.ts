@@ -26,7 +26,6 @@ import { ClassService } from '../../services/class.service';
 export class EditStudentComponent implements OnChanges {
   @Input() student: Student = {
     name: '',
-    score: 0,
     school_class_name: '',
   };
   @Input() isAdd: boolean = true;
@@ -36,11 +35,6 @@ export class EditStudentComponent implements OnChanges {
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
-    score: new FormControl('', [
-      Validators.required,
-      Validators.min(0),
-      Validators.max(100),
-    ]),
     school_class_name: new FormControl('', [Validators.required]),
   });
   constructor(private classService: ClassService) {}
@@ -55,7 +49,6 @@ export class EditStudentComponent implements OnChanges {
     if (changes?.['student'] && changes?.['student'].currentValue) {
       this.form.patchValue({
         name: this.student.name,
-        score: String(this.student.score),
         school_class_name: this.student.school_class_name,
       });
     }
@@ -67,10 +60,10 @@ export class EditStudentComponent implements OnChanges {
   onSubmit() {
     this.submit.emit({
       name: this.fc.name.value,
-      score: this.fc.score.value,
       school_class_name: this.fc.school_class_name.value,
     });
     this.form.reset();
+    this.form.controls.school_class_name.setValue("")
   }
 
   get fc() {

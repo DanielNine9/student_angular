@@ -11,7 +11,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { Class } from '../../type';
+import { Class, Semester } from '../../type';
 import {
   FormBuilder,
   FormControl,
@@ -20,6 +20,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { SemesterService } from '../../services/semester.service';
 
 @Component({
   selector: 'app-edit-class',
@@ -29,11 +30,13 @@ import {
   styleUrl: './edit-class.component.css',
 })
 export class EditClassComponent implements AfterViewInit, OnChanges {
+  semesters: Semester[] = [];
+  semestersSelected: Semester[] = [];
   @Input() schoolClass: Class = {
     name: '',
   };
   @Input() isAdd: boolean = true;
-  @Output() cancel = new EventEmitter();
+  @Output() cancelModal = new EventEmitter();
   @Output() submit = new EventEmitter();
 
   @ViewChild('modal') modal: ElementRef | undefined;
@@ -41,28 +44,52 @@ export class EditClassComponent implements AfterViewInit, OnChanges {
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
+    selectedSemester: new FormControl(''),
   });
-  constructor(private fb: FormBuilder) {
+  constructor(private semesterService: SemesterService) {
+    this.getSemesters();
+   
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes?.["schoolClass"] && changes?.["schoolClass"].currentValue) {
+    if (changes?.['schoolClass'] && changes?.['schoolClass'].currentValue) {
       this.form.patchValue({
         name: this.schoolClass.name,
       });
+      this.getSemesters();
     }
+  }
+
+  private getSemesters() {
+    this.semesterService.getSemesters().subscribe((data) => {
+      this.semesters = data;
+      this.semestersSelected = this.semesters.filter(
+        item => this.schoolClass.semester_ids?.includes(item.id as number)
+      )
+    });
   }
 
   ngAfterViewInit(): void {}
 
   onCancel() {
-    this.cancel.emit(true);
-    this.form.reset();
+    console.log("vao day ne")
+    this.cancelModal.emit(true);
+    this.form.controls.selectedSemester.setValue("")
+
+    // this.form.reset();
+    // this.schoolClass = {name: ""}
   }
 
   onSubmit() {
-    this.submit.emit(this.form.controls.name?.value);
+    this.submit.emit({
+      name: this.form.controls.name?.value,
+      semester_ids: this.semestersSelected.map((item) => item.id),
+    });
+    this.cancelModal.emit(true);
+    this.form.controls.selectedSemester.setValue("")
     this.form.reset();
+    this.semestersSelected = []
   }
 
   get fc() {
@@ -75,10 +102,25 @@ export class EditClassComponent implements AfterViewInit, OnChanges {
     } else return 'Edit';
   }
 
-  // check(event: any) {
-  //   event.preventDefault();
-  //   console.log(this.fc.name.touched);
-  //   console.log(this.fc.name.errors);
-  //   console.log(this.fc.name.invalid);
-  // }
+  addSemesterSelected(event: Event | null) {
+    const target = event?.target as HTMLSelectElement;
+    const selectedSemesterId: any = target?.value;
+    const selectedSemester = this.semesters.find(
+      (semester) => semester.id == selectedSemesterId
+    );
+    if (
+      selectedSemester &&
+      !this.semestersSelected.some((s) => s.id == selectedSemester.id)
+    ) {
+      this.semestersSelected = [...this.semestersSelected, selectedSemester];
+    }
+  }
+
+  removeSemesterSelected(name: string | undefined) {
+    if (name) {
+      this.semestersSelected = this.semestersSelected.filter(
+        (item) => item.name != name
+      );
+    }
+  }
 }

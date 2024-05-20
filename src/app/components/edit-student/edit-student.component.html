@@ -49,40 +49,7 @@
               </div>
             </div>
           </div>
-          <div class="mb-3">
-            <label for="score" class="form-label">Score</label>
-            <input
-              autofocus
-              type="number"
-              class="form-control"
-              id="score"
-              formControlName="score"
-            />
-            <div *ngIf="fc.score.errors?.['required']">
-              <div
-                class="alert alert-danger"
-                *ngIf="fc.score.invalid && fc.score.touched"
-              >
-                Score is required
-              </div>
-            </div>
-            <div *ngIf="fc.score.errors?.['min']">
-              <div
-                class="alert alert-danger"
-                *ngIf="fc.score.invalid && fc.score.touched"
-              >
-                Min is 0
-              </div>
-            </div>
-            <div *ngIf="fc.score.errors?.['max']">
-              <div
-                class="alert alert-danger"
-                *ngIf="fc.score.invalid && fc.score.touched"
-              >
-                Max is 100
-              </div>
-            </div>
-          </div>
+         
           <div class="mb-3">
             <label for="name" class="form-label">Class</label>
             <select class="form-control form-select" name="" id="" formControlName="school_class_name">
@@ -111,7 +78,7 @@
           data-bs-dismiss="modal"
           class="btn btn-primary"
           (click)="onSubmit()"
-          [disabled]="fc.name.invalid || fc.score.invalid || fc.school_class_name.invalid"
+          [disabled]="fc.name.invalid  || fc.school_class_name.invalid"
         >
           {{ title }}
         </button>
